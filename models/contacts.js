@@ -44,9 +44,9 @@ const addContact = async (body) => {
 
     const newContact = {
       id: String(nextIdNumber),
-      name: name,
-      email: email,
-      phone: phone,
+      // name: name,
+      // email: email,
+      // phone: phone,
     };
 
     parseContacts.push(newContact);
