@@ -1,9 +1,33 @@
 const express = require("express");
+const router = express.Router();
+
+// const {
+//   getContact,
+//   getByIdContact,
+//   postContact,
+//   deleteContact,
+//   putContact,
+//   patchContact,
+// } = require("../../controllers/postsController");
+
+// router.get("/", getContact);
+
+// router.get("/:contactId", getByIdContact);
+
+// router.post("/", addPostValidation, postContact);
+
+// router.delete("/:contactId", deleteContact);
+
+// router.put("/:contactId", addPostValidation, putContact);
+
+// router.patch("/:contactId", patchValidation, patchContact);
+
+// module.exports = { contactsRouter: router };
+
 const {
   addPostValidation,
   patchValidation,
 } = require("../../middlewares/validationSchema");
-const router = express.Router();
 
 const {
   listContacts,
@@ -15,6 +39,7 @@ const {
 
 router.get("/", async (req, res) => {
   const contacts = await listContacts();
+
   res.json(contacts);
 });
 
@@ -75,5 +100,4 @@ router.patch("/:contactId", patchValidation, async (req, res) => {
     res.status(200).json({ status: "success", updateContactItem });
   }
 });
-
 module.exports = router;

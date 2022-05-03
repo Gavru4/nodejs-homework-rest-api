@@ -1,5 +1,5 @@
 const fs = require("fs").promises;
-// const nanoid = require("nanoid");
+
 const path = require("path");
 const contactsPath = path.join(__dirname, "./contacts.json");
 
@@ -38,11 +38,10 @@ const addContact = async (name, email, phone) => {
   try {
     const contacts = await listContacts();
 
-    const nextIdNumber = Number(contacts[contacts.length - 1].id) + 1;
+    const newContactID = Number(contacts[contacts.length - 1].id) + 1;
 
     const newContact = {
-      id: String(nextIdNumber),
-      // id: nanoid(),
+      id: String(newContactID),
       name: name,
       email: email,
       phone: phone,
