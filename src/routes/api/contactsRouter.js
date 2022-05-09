@@ -8,7 +8,7 @@ const {
   deleteContact,
   putContact,
   patchContact,
-} = require("../../controllers/postsController");
+} = require("../../controllers/contacts");
 
 const {
   addPostValidation,

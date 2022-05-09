@@ -1,3 +1,5 @@
+// const { Post } = require("../db/contactsModel");
+
 const {
   listContacts,
   getContactById,
@@ -21,8 +23,8 @@ const getByIdContact = async (req, res) => {
 };
 
 const postContact = async (req, res) => {
-  const { name, email, phone } = req.body;
-  const newContact = await addContact(name, email, phone);
+  const { name, email, phone, favorite } = req.body;
+  const newContact = await addContact(name, email, phone, favorite);
   res.status(201).json({ status: "success", newContact });
 };
 
