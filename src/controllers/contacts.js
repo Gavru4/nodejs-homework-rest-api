@@ -1,5 +1,3 @@
-// const { Post } = require("../db/contactsModel");
-
 const {
   listContacts,
   getContactById,
@@ -41,7 +39,7 @@ const deleteContact = async (req, res) => {
 
 const putContact = async (req, res) => {
   const { contactId } = req.params;
-  const { name, email, phone } = req.body;
+  const { name, email, phone, favorite } = req.body;
   const contactById = await getContactById(contactId);
   if (!contactById) {
     return res.status(404).json({ status: "Not found" });
@@ -50,6 +48,7 @@ const putContact = async (req, res) => {
       name,
       email,
       phone,
+      favorite,
     });
     res.status(200).json({ status: "success", updateContactItem });
   }
@@ -57,7 +56,7 @@ const putContact = async (req, res) => {
 
 const patchContact = async (req, res) => {
   const { contactId } = req.params;
-  const { name, email, phone } = req.body;
+  const { name, email, phone, favorite } = req.body;
   const contactById = await getContactById(contactId);
   if (!contactById) {
     return res.status(404).json({ status: "Not found" });
@@ -66,7 +65,21 @@ const patchContact = async (req, res) => {
       name,
       email,
       phone,
+      favorite,
     });
+    res.status(200).json({ status: "success", updateContactItem });
+  }
+};
+
+const updateStatusContact = async (req, res) => {
+  const { contactId } = req.params;
+  const { favorite } = req.body;
+  const contactById = await getContactById(contactId);
+
+  if (!contactById) {
+    return res.status(404).json({ status: "Not found" });
+  } else {
+    const updateContactItem = await updateContact(contactId, { favorite });
     res.status(200).json({ status: "success", updateContactItem });
   }
 };
@@ -78,4 +91,5 @@ module.exports = {
   deleteContact,
   patchContact,
   putContact,
+  updateStatusContact,
 };
