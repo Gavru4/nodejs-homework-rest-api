@@ -8,11 +8,13 @@ const {
   deleteContact,
   putContact,
   patchContact,
-} = require("../../controllers/postsController");
+  updateStatusContact,
+} = require("../../controllers/contacts");
 
 const {
   addPostValidation,
   patchValidation,
+  patchStatusValidation,
 } = require("../../middlewares/validationSchema");
 
 router.get("/", getContact);
@@ -26,5 +28,11 @@ router.delete("/:contactId", deleteContact);
 router.put("/:contactId", addPostValidation, putContact);
 
 router.patch("/:contactId", patchValidation, patchContact);
+
+router.patch(
+  "/:contactId/favorite",
+  patchStatusValidation,
+  updateStatusContact
+);
 
 module.exports = { contactsRouter: router };
