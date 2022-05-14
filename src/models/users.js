@@ -1,12 +1,52 @@
-
 const { Users } = require("../db/userModal");
-const bcryptjs = required("bcryptjs")
+const bcryptjs = require("bcryptjs");
+const jwt = require("jsonwebtoken");
 
-const userSingUp = async ({ email, password, subscription }) => {
-  const nevUser = await Users.create({
+const userSingUp = async (body) => {
+  const { email, password, subscription } = body;
+
+  const newUser = await Users.create({
     email,
-    password: await bcryptjs.hach{password, process.env.BCRYPT_SALT_ROUNDS 
-    }
+    password: await bcryptjs.hash(
+      password,
+      Number(process.env.BCRYPT_SALT_ROUNDS)
+    ),
+    subscription,
   });
+  return newUser;
 };
-module.exports = { userSingUp };
+
+const userLogin = async (body) => {
+  const { email, password } = body;
+
+  const user = await Users.findOne({ email });
+  const IsPasswordCorrect = await bcryptjs.compare(password, user.password);
+
+  if (!IsPasswordCorrect) {
+    const token = jwt.sign({ sub: user._id }, process.env.JWT_SECRET, {
+      expiresIn: process.env.JWT_EXPIRES_IN,
+    });
+    const findUndUpdateUser = await Users.findOneAndUpdate(
+      { email },
+      { token },
+      { new: true }
+    );
+    return findUndUpdateUser;
+  }
+};
+
+const userLogout = async (token) => {
+  const user = await Users.findOne(
+    { token },
+    { email: 1, subscription: 1, _id: 0 }
+  );
+  return user;
+};
+const getCurrentUser = async (token) => {
+  const user = await Users.findOne(
+    { token },
+    { email: 1, subscription: 1, _id: 0 }
+  );
+  return user;
+};
+module.exports = { userSingUp, userLogin, userLogout, getCurrentUser };
