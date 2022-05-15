@@ -19,19 +19,17 @@ const userSingUp = async (body) => {
 const userLogin = async (body) => {
   const { email, password } = body;
 
-  const user = await Users.findOne({ email });
-  const IsPasswordCorrect = await bcryptjs.compare(password, user.password);
+  let user = await Users.findOne({ email });
 
-  if (!IsPasswordCorrect) {
+  const isPasswordCorrect = await bcryptjs.compare(password, user.password);
+
+  if (isPasswordCorrect) {
     const token = jwt.sign({ sub: user._id }, process.env.JWT_SECRET, {
       expiresIn: process.env.JWT_EXPIRES_IN,
     });
-    const findUndUpdateUser = await Users.findOneAndUpdate(
-      { email },
-      { token },
-      { new: true }
-    );
-    return findUndUpdateUser;
+
+    user = await Users.findOneAndUpdate({ email }, { token }, { new: true });
+    return user;
   }
 };
 

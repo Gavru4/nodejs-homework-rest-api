@@ -5,12 +5,14 @@ const {
   catchLoginErrors,
   catchErrors,
 } = require("../../middlewares/cathErrors");
+
 const {
   singUpUser,
   loginUser,
   logoutUser,
   currentUser,
 } = require("../../controllers/users");
+
 const {
   userLoginLogoutValidation,
 } = require("../../middlewares/validationSchema");
@@ -21,6 +23,9 @@ router.post(
   userLoginLogoutValidation,
   catchSignupErrors(singUpUser)
 );
+
 router.post("/login", userLoginLogoutValidation, catchLoginErrors(loginUser));
 router.post("/logout", authenticate, catchLoginErrors(logoutUser));
 router.post("/current", authenticate, catchErrors(currentUser));
+
+module.exports = { usersRouter: router };
