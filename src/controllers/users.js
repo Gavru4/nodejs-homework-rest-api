@@ -26,8 +26,10 @@ const loginUser = async (req, res, next) => {
   });
 };
 const logoutUser = async (req, res, next) => {
-  const currentUser = await userLogout(req.user.token);
-  currentUser.token = null;
+  // const currentUser = await userLogout(req.user.token);
+  // currentUser.token = null;
+  await userLogout(req.user.token);
+
   res.sendStatus(204);
 };
 const currentUser = async (req, res, next) => {

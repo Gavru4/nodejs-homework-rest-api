@@ -34,9 +34,10 @@ const userLogin = async (body) => {
 };
 
 const userLogout = async (token) => {
-  const user = await Users.findOne(
+  const user = await Users.findOneAndUpdate(
     { token },
-    { email: 1, subscription: 1, _id: 0 }
+    { token: null },
+    { new: true }
   );
   return user;
 };
