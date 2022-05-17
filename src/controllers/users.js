@@ -12,6 +12,7 @@ const singUpUser = async (req, res, next) => {
     ResponseBody: { user },
   });
 };
+
 const loginUser = async (req, res, next) => {
   const { token, email, subscription } = await userLogin(req.body);
   res.status(201).json({
@@ -25,13 +26,12 @@ const loginUser = async (req, res, next) => {
     },
   });
 };
-const logoutUser = async (req, res, next) => {
-  // const currentUser = await userLogout(req.user.token);
-  // currentUser.token = null;
-  await userLogout(req.user.token);
 
+const logoutUser = async (req, res, next) => {
+  await userLogout(req.user.token);
   res.sendStatus(204);
 };
+
 const currentUser = async (req, res, next) => {
   const user = await getCurrentUser(req.user.token);
   res.status(200).send(user);

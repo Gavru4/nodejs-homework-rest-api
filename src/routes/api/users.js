@@ -1,5 +1,5 @@
 const express = require("express");
-const authenticate = require("../../middlewares/authorize");
+const authorize = require("../../middlewares/authorize");
 const {
   catchSignupErrors,
   catchLoginErrors,
@@ -25,7 +25,7 @@ router.post(
 );
 
 router.post("/login", userLoginLogoutValidation, catchLoginErrors(loginUser));
-router.post("/logout", authenticate, catchLoginErrors(logoutUser));
-router.post("/current", authenticate, catchErrors(currentUser));
+router.get("/logout", authorize, catchErrors(logoutUser));
+router.get("/current", authorize, catchErrors(currentUser));
 
 module.exports = { usersRouter: router };
