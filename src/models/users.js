@@ -41,6 +41,7 @@ const userLogout = async (token) => {
   );
   return user;
 };
+
 const getCurrentUser = async (token) => {
   const user = await Users.findOne(
     { token },

@@ -1,6 +1,5 @@
 const { Users } = require("../db/userModal");
 const jwt = require("jsonwebtoken");
-const { JWT_SECRET } = process.env;
 const { Unauthorized } = require("http-errors");
 
 const authorize = async (req, res, next) => {
@@ -14,8 +13,10 @@ const authorize = async (req, res, next) => {
     if (bearer !== "Bearer") {
       throw new Unauthorized("Not authorized");
     }
-    jwt.verify(token, JWT_SECRET);
+
+    jwt.verify(token, process.env.JWT_SECRET);
     const user = await Users.findOne({ token });
+
     if (!user) {
       throw new Unauthorized("Not authorized");
     }
