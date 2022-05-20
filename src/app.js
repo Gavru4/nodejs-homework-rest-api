@@ -2,6 +2,25 @@ const express = require("express");
 const logger = require("morgan");
 const cors = require("cors");
 
+const multer = require("multer");
+const mime = require("mime-types");
+const uuid = require("uuid");
+
+const upload = multer({
+  storage: multer.diskStorage({
+    filename: (req, file, cb) => {
+      const extname = mime.extension(file.mimetype);
+      const filename = uuid.v4() + "." + extname;
+      cb(null, filename);
+    },
+    destination: "public",
+  }),
+});
+app.use("/avatars", express.static("public"));
+app.post("/avatar", upload.single("avatar"), function (req, res, next) {
+  res.send();
+});
+
 const { contactsRouter } = require("./routes/api/contactsRouter");
 
 const app = express();
