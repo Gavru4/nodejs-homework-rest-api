@@ -3,6 +3,7 @@ const {
   userLogin,
   userLogout,
   getCurrentUser,
+  updateUserAvatar,
 } = require("../models/users");
 
 const singUpUser = async (req, res, next) => {
@@ -37,4 +38,15 @@ const currentUser = async (req, res, next) => {
   res.status(200).send(user);
 };
 
-module.exports = { singUpUser, loginUser, logoutUser, currentUser };
+const getUserAvatar = async (req, res, next) => {
+  const user = await updateUserAvatar(req.user.token, req.file);
+  res.status(200).send(user);
+};
+
+module.exports = {
+  singUpUser,
+  loginUser,
+  logoutUser,
+  currentUser,
+  getUserAvatar,
+};
