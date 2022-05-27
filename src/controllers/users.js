@@ -4,6 +4,7 @@ const {
   userLogout,
   getCurrentUser,
   updateUserAvatar,
+  checkUserEmail,
 } = require("../models/users");
 
 const singUpUser = async (req, res, next) => {
@@ -43,10 +44,16 @@ const getUserAvatar = async (req, res, next) => {
   res.status(200).send(user);
 };
 
+const verificationUserEmail = async (req, res, next) => {
+  const user = await checkUserEmail(req.user);
+  res.status(200).send(user);
+};
+
 module.exports = {
   singUpUser,
   loginUser,
   logoutUser,
   currentUser,
   getUserAvatar,
+  verificationUserEmail,
 };
