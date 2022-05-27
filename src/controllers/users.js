@@ -5,6 +5,7 @@ const {
   getCurrentUser,
   updateUserAvatar,
   checkUserEmail,
+  reCheckedUserEmail,
 } = require("../models/users");
 
 const singUpUser = async (req, res, next) => {
@@ -45,8 +46,21 @@ const getUserAvatar = async (req, res, next) => {
 };
 
 const verificationUserEmail = async (req, res, next) => {
-  const user = await checkUserEmail(req.user);
-  res.status(200).send(user);
+  await checkUserEmail(req.params.verificationToken);
+  res.status(200).json({
+    ResponseBody: { message: "Verification successful" },
+  });
+};
+const ResendingVerificationUserEmail = async (req, res, next) => {
+  await reCheckedUserEmail(req.body.email);
+  if (req.body.verify) {
+    return res
+      .status(400)
+      .json({ message: "Verification has already been passed" });
+  }
+  res.status(200).json({
+    ResponseBody: { message: "Verification successful" },
+  });
 };
 
 module.exports = {
@@ -56,4 +70,5 @@ module.exports = {
   currentUser,
   getUserAvatar,
   verificationUserEmail,
+  ResendingVerificationUserEmail,
 };

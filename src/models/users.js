@@ -4,6 +4,8 @@ const jwt = require("jsonwebtoken");
 const gravatar = require("gravatar");
 const Jimp = require("jimp");
 const fs = require("fs").promises;
+const sgMail = require("@sendgrid/mail");
+const uuid = require("uuid");
 
 const userSingUp = async (body) => {
   const { email, password, subscription } = body;
@@ -17,6 +19,26 @@ const userSingUp = async (body) => {
     subscription,
     avatarURL: gravatar.url(email, { s: "100", r: "x", d: "retro" }, false),
   });
+
+  const verificationToken = uuid.v4();
+
+  sgMail.setApiKey(process.env.SENDGRID_API_KEY);
+  const msg = {
+    to: email,
+    from: "gavrromka086@gmail.com",
+    subject: "Sending with SendGrid is Fun",
+    text: `<p>confirm your email <a href="http://localhost:3000/api/users/verify/${verificationToken}">click here</a></p>`,
+    html: `<p>confirm your email <a href="http://localhost:3000/api/users/verify/${verificationToken}">click here </a></p>`,
+  };
+  sgMail
+    .send(msg)
+    .then(() => {
+      console.log("Email sent");
+    })
+    .catch((error) => {
+      console.error(error);
+    });
+
   return newUser;
 };
 
@@ -69,10 +91,19 @@ const updateUserAvatar = async (token, body) => {
   return user;
 };
 
-const checkUserEmail = async (token) => {
-  const user = await Users.findOne(
-    { token },
-    { email: 1, subscription: 1, _id: 0 }
+const checkUserEmail = async ({ verificationToken }) => {
+  const user = await Users.findOneAndUpdate(
+    { verificationToken },
+    { verificationToken: null, verify: true },
+    { new: true }
+  );
+  return user;
+};
+const reCheckedUserEmail = async ({ verificationToken }) => {
+  const user = await Users.findOneAndUpdate(
+    { verificationToken },
+    { verificationToken: null, verify: true },
+    { new: true }
   );
   return user;
 };
@@ -84,25 +115,5 @@ module.exports = {
   getCurrentUser,
   updateUserAvatar,
   checkUserEmail,
+  reCheckedUserEmail,
 };
-
-// using Twilio SendGrid's v3 Node.js Library
-// https://github.com/sendgrid/sendgrid-nodejs
-// javascript
-// const sgMail = require('@sendgrid/mail')
-// sgMail.setApiKey(process.env.SENDGRID_API_KEY)
-// const msg = {
-//   to: 'test@example.com', // Change to your recipient
-//   from: 'test@example.com', // Change to your verified sender
-//   subject: 'Sending with SendGrid is Fun',
-//   text: 'and easy to do anywhere, even with Node.js',
-//   html: '<strong>and easy to do anywhere, even with Node.js</strong>',
-// }
-// sgMail
-//   .send(msg)
-//   .then(() => {
-//     console.log('Email sent')
-//   })
-//   .catch((error) => {
-//     console.error(error)
-//   })
