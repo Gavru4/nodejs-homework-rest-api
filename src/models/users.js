@@ -18,8 +18,8 @@ const userSingUp = async (body) => {
     ),
     subscription,
     avatarURL: gravatar.url(email, { s: "100", r: "x", d: "retro" }, false),
+    verificationToken: uuid.v4(),
   });
-
   const verificationToken = uuid.v4();
 
   sgMail.setApiKey(process.env.SENDGRID_API_KEY);
@@ -34,18 +34,18 @@ const userSingUp = async (body) => {
     .send(msg)
     .then(() => {
       console.log("Email sent");
+      return true;
     })
     .catch((error) => {
       console.error(error);
     });
-
   return newUser;
 };
 
 const userLogin = async (body) => {
   const { email, password } = body;
 
-  let user = await Users.findOne({ email });
+  let user = await Users.findOne({ email, verify: true });
 
   const isPasswordCorrect = await bcryptjs.compare(password, user.password);
 
@@ -91,21 +91,44 @@ const updateUserAvatar = async (token, body) => {
   return user;
 };
 
-const checkUserEmail = async ({ verificationToken }) => {
+const checkUserEmail = async (verificationToken) => {
+  console.log(verificationToken);
   const user = await Users.findOneAndUpdate(
-    { verificationToken },
+    verificationToken,
     { verificationToken: null, verify: true },
     { new: true }
   );
+  console.log(user);
   return user;
 };
-const reCheckedUserEmail = async ({ verificationToken }) => {
-  const user = await Users.findOneAndUpdate(
-    { verificationToken },
-    { verificationToken: null, verify: true },
-    { new: true }
-  );
-  return user;
+const reCheckedUserEmail = async (body) => {
+  const { email } = body;
+  const user = await Users.findOne({ email });
+
+  if (!user.verify) {
+    const verificationToken = uuid.v4();
+
+    sgMail.setApiKey(process.env.SENDGRID_API_KEY);
+
+    const msg = {
+      to: email,
+      from: "gavrromka086@gmail.com",
+      subject: "Sending with SendGrid is Fun",
+      text: `<p>confirm your email <a href="http://localhost:3000/api/users/verify/${verificationToken}">click here</a></p>`,
+      html: `<p>confirm your email <a href="http://localhost:3000/api/users/verify/${verificationToken}">click here </a></p>`,
+    };
+    return await sgMail
+      .send(msg)
+      .then(() => {
+        console.log("Email sent");
+        return true;
+      })
+      .catch((error) => {
+        console.error(error);
+      });
+  } else {
+    return false;
+  }
 };
 
 module.exports = {

@@ -12,7 +12,7 @@ const {
   currentUser,
   getUserAvatar,
   verificationUserEmail,
-  ResendingVerificationUserEmail,
+  resendingVerificationUserEmail,
 } = require("../../controllers/users");
 const {
   userLoginLogoutValidation,
@@ -51,10 +51,7 @@ router.patch(
   catchErrors(getUserAvatar)
 );
 
-router.get(
-  "/users/verify/:verificationToken,",
-  catchErrors(verificationUserEmail)
-);
-router.post("/users/verify/", catchErrors(ResendingVerificationUserEmail));
+router.get("/verify/:verificationToken,", catchErrors(verificationUserEmail));
+router.post("/users/verify/", catchErrors(resendingVerificationUserEmail));
 
 module.exports = { usersRouter: router };

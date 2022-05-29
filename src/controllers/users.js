@@ -46,21 +46,19 @@ const getUserAvatar = async (req, res, next) => {
 };
 
 const verificationUserEmail = async (req, res, next) => {
-  await checkUserEmail(req.params.verificationToken);
-  res.status(200).json({
-    ResponseBody: { message: "Verification successful" },
-  });
+  console.log(req);
+  const user = await checkUserEmail(req.params.verificationToken);
+  res.status(200).json({ message: "Verification successful", user });
+  console.log(user);
 };
-const ResendingVerificationUserEmail = async (req, res, next) => {
-  await reCheckedUserEmail(req.body.email);
-  if (req.body.verify) {
-    return res
-      .status(400)
-      .json({ message: "Verification has already been passed" });
+
+const resendingVerificationUserEmail = async (req, res, next) => {
+  const result = await reCheckedUserEmail(req.body);
+  if (result) {
+    res.status(200).json({ message: "Verification email send" });
+  } else {
+    res.status(400).json({ message: "Verification has already been passed" });
   }
-  res.status(200).json({
-    ResponseBody: { message: "Verification successful" },
-  });
 };
 
 module.exports = {
@@ -70,5 +68,5 @@ module.exports = {
   currentUser,
   getUserAvatar,
   verificationUserEmail,
-  ResendingVerificationUserEmail,
+  resendingVerificationUserEmail,
 };
