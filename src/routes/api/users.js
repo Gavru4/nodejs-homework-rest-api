@@ -51,7 +51,7 @@ router.patch(
   catchErrors(getUserAvatar)
 );
 
-router.get("/verify/:verificationToken,", catchErrors(verificationUserEmail));
+router.get("/verify/:verificationToken", catchErrors(verificationUserEmail));
 router.post("/users/verify/", catchErrors(resendingVerificationUserEmail));
 
 module.exports = { usersRouter: router };

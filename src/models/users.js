@@ -92,13 +92,11 @@ const updateUserAvatar = async (token, body) => {
 };
 
 const checkUserEmail = async (verificationToken) => {
-  console.log(verificationToken);
   const user = await Users.findOneAndUpdate(
     verificationToken,
     { verificationToken: null, verify: true },
     { new: true }
   );
-  console.log(user);
   return user;
 };
 const reCheckedUserEmail = async (body) => {

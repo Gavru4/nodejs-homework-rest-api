@@ -46,10 +46,8 @@ const getUserAvatar = async (req, res, next) => {
 };
 
 const verificationUserEmail = async (req, res, next) => {
-  console.log(req);
   const user = await checkUserEmail(req.params.verificationToken);
   res.status(200).json({ message: "Verification successful", user });
-  console.log(user);
 };
 
 const resendingVerificationUserEmail = async (req, res, next) => {
